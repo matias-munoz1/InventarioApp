@@ -5,13 +5,13 @@ import { db } from '../firebase';
 import { Table, Container, Spinner, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
+import { vfs } from 'pdfmake/build/vfs_fonts'; // Importación corregida
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
 import { AuthContext } from './AuthContext';
 
-// Registrar las fuentes para pdfmake
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+// Registrar las fuentes
+pdfMake.vfs = vfs;
 
 function InventorySummary() {
   const [products, setProducts] = useState([]);
