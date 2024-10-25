@@ -167,7 +167,7 @@ function TaskList() {
       <header className="d-flex justify-content-between align-items-center mb-4 p-3 bg-light shadow-sm rounded">
         <div className="d-flex align-items-center">
           <img src="/logo.png" alt="Logo Empresa" className="logo" />
-          <h1 className="text-primary fw-bold mb-0 ms-3">Inventario de Ropa</h1>
+          <h1 className="text-primary fw-bold mb-0 ms-3">Inventario de Tienda</h1>
         </div>
         <div>
           {userRole !== 'viewer' && (
