@@ -8,13 +8,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
 
 function ProductDetail() {
-  const { id } = useParams(); // Obtenemos el ID del producto desde la URL
+  const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Función para obtener los datos del producto
     const fetchProduct = async () => {
       try {
         const docRef = doc(db, 'task', id);
@@ -57,7 +56,6 @@ function ProductDetail() {
 
   return (
     <div className="container mt-5">
-      {/* Encabezado */}
       <header className="d-flex justify-content-between align-items-center mb-4 p-3 bg-light shadow-sm rounded">
         <div className="d-flex align-items-center">
           <img src="/logo.png" alt="Logo Empresa" className="logo" />
@@ -68,20 +66,17 @@ function ProductDetail() {
         </Button>
       </header>
 
-      {/* Detalles del Producto */}
       <div className="card mb-4 shadow-sm">
         <div className="card-body">
           <div className="row">
-            {/* Imagen del Producto */}
             <div className="col-md-6 text-center">
               <img
                 src={product.imageUrl || '/default-image.png'}
                 alt={product.title}
                 className="img-fluid rounded mb-3"
-                style={{ maxWidth: '400px', width: '100%' }}
+                style={{ maxWidth: '300px', height: 'auto', objectFit: 'contain' }}
               />
             </div>
-            {/* Información del Producto */}
             <div className="col-md-6">
               <h2 className="card-title">{product.title}</h2>
               <p className="card-text">{product.extendedDescription}</p>
@@ -94,7 +89,6 @@ function ProductDetail() {
               <p>
                 <strong>Stock:</strong> {product.stock}
               </p>
-              {/* Puedes añadir más información detallada aquí */}
             </div>
           </div>
         </div>

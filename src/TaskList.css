@@ -1,0 +1,43 @@
+/* TaskList.css */
+.card {
+    transition: transform 0.3s, box-shadow 0.3s;
+    border-radius: 15px;
+  }
+  
+  .card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .card-title {
+    font-weight: bold;
+    color: #2d4154;
+  }
+  
+  .card-body {
+    padding: 20px;
+  }
+  
+  .btn-custom {
+    width: 48%;
+  }
+  
+  .card-img-container {
+    overflow: hidden;
+    border-radius: 15px 15px 0 0;
+  }
+  
+  .card-img-container img {
+    transition: transform 0.3s;
+  }
+  
+  .card-img-container:hover img {
+    transform: scale(1.1);
+  }
+  
+  .badge-status {
+    font-size: 0.9rem;
+    padding: 5px 10px;
+    border-radius: 12px;
+  }
+  
