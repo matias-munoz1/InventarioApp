@@ -94,3 +94,8 @@
   color: #fff;
 }
 
+@media print {
+  .btn-hide-print {
+    display: none;
+  }
+}

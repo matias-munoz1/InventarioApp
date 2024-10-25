@@ -7,7 +7,6 @@ import {
   deleteDoc,
   updateDoc,
   Timestamp,
-  addDoc,
 } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 import { FaEdit, FaTrash } from 'react-icons/fa';
@@ -30,7 +29,7 @@ function TaskList() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const navigate = useNavigate();
-  const { userRole } = useContext(AuthContext); // Obtener el rol del usuario
+  const { userRole } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -54,6 +53,58 @@ function TaskList() {
   const handleEdit = (task) => {
     setEditTask(task);
     setShowEditModal(true);
+  };
+
+  const handleSave = async () => {
+    try {
+      const taskRef = doc(db, 'task', editTask.id);
+      const previousTask = tasks.find((task) => task.id === editTask.id);
+      const previousStock = previousTask?.stock || 0;
+  
+      const stockChange = Number(editTask.stock) - previousStock;
+      let changeType = 'Actualización';
+      let stockChangeAmount = 0;
+  
+      if (stockChange !== 0) {
+        changeType = stockChange > 0 ? 'Incremento de Stock' : 'Decremento de Stock';
+        stockChangeAmount = stockChange;
+      }
+  
+      const newChange = {
+        timestamp: Timestamp.now(),
+        changeType,
+        stockChangeAmount,
+        updatedStock: editTask.stock,
+      };
+  
+      await updateDoc(taskRef, {
+        ...editTask,
+        stock: Number(editTask.stock),
+        lastModified: Timestamp.now(),
+        lastChangeType: changeType,
+        lastStockChangeAmount: stockChangeAmount,
+        history: previousTask.history ? [...previousTask.history, newChange] : [newChange],
+      });
+  
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === editTask.id
+            ? {
+                ...editTask,
+                lastModified: Timestamp.now(),
+                lastChangeType: changeType,
+                lastStockChangeAmount: stockChangeAmount,
+                history: previousTask.history ? [...previousTask.history, newChange] : [newChange],
+              }
+            : task
+        )
+      );
+  
+      setShowEditModal(false);
+      setEditTask(null);
+    } catch (err) {
+      console.error('Error al guardar los cambios:', err);
+    }
   };
 
   const handleDelete = (task) => {
@@ -88,6 +139,7 @@ function TaskList() {
       </p>
     );
   }
+
   if (error) return <p>{error}</p>;
 
   return (
@@ -116,18 +168,16 @@ function TaskList() {
         {tasks.map((task) => (
           <div key={task.id} className="col-md-4 mb-4">
             <div className="card shadow-lg h-100 border-0">
-              <div className="card-img-container">
-                <img
-                  src={task.imageUrl || '/default-image.png'}
-                  className="card-img-top rounded-top"
-                  alt={task.title}
-                  style={{ height: '200px', objectFit: 'cover' }}
-                />
-              </div>
+              <img
+                src={task.imageUrl || '/default-image.png'}
+                className="card-img-top rounded-top"
+                alt={task.title}
+                style={{ height: '200px', objectFit: 'cover' }}
+              />
               <div className="card-body d-flex flex-column">
                 <h5 className="card-title fw-bold">{task.title}</h5>
                 <p className="card-text text-muted">{task.description}</p>
-                <p className="mb-1">
+                <p>
                   <strong>Estado:</strong>{' '}
                   <span className={`badge ${task.status ? 'bg-success' : 'bg-secondary'}`}>
                     {task.status ? 'Disponible' : 'No disponible'}
@@ -143,16 +193,10 @@ function TaskList() {
                   </Link>
                   {userRole !== 'viewer' && (
                     <div className="d-flex justify-content-between">
-                      <button
-                        className="btn btn-warning w-50 me-2"
-                        onClick={() => handleEdit(task)}
-                      >
+                      <button className="btn btn-warning w-50 me-2" onClick={() => handleEdit(task)}>
                         <FaEdit /> Editar
                       </button>
-                      <button
-                        className="btn btn-danger w-50"
-                        onClick={() => handleDelete(task)}
-                      >
+                      <button className="btn btn-danger w-50" onClick={() => handleDelete(task)}>
                         <FaTrash /> Eliminar
                       </button>
                     </div>
@@ -169,7 +213,8 @@ function TaskList() {
           show={showEditModal}
           task={editTask}
           onChange={setEditTask}
-          onSave={() => setShowEditModal(false)}
+          onSave={handleSave}
+          onClose={() => setShowEditModal(false)}
         />
       )}
 
