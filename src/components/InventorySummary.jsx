@@ -5,7 +5,7 @@ import { db } from '../firebase';
 import { Table, Container, Spinner, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.pdfMake.vfs; //
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
