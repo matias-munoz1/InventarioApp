@@ -99,3 +99,7 @@
     display: none;
   }
 }
+
+.hide-for-pdf .no-print {
+  display: none;
+}

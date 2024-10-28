@@ -37,13 +37,25 @@ function InventorySummary() {
 
   const generatePDF = () => {
     const element = summaryRef.current;
+
+    // Añade la clase de ocultar
+    element.classList.add('hide-for-pdf');
+    
     const options = {
       margin: 10,
       filename: 'Resumen_de_Inventario.pdf',
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
     };
-    html2pdf().set(options).from(element).save();
+
+    html2pdf()
+      .set(options)
+      .from(element)
+      .save()
+      .finally(() => {
+        // Quita la clase después de generar el PDF
+        element.classList.remove('hide-for-pdf');
+      });
   };
 
   const handleViewHistory = (history) => {
@@ -73,11 +85,19 @@ function InventorySummary() {
           </div>
           <div>
             {userRole === 'owner' && (
-              <Button variant="primary" className="me-2" onClick={generatePDF}>
+              <Button
+                variant="primary"
+                className="me-2 no-print"  // Añadir la clase "no-print"
+                onClick={generatePDF}
+              >
                 Generar PDF
               </Button>
             )}
-            <Button variant="secondary" onClick={() => navigate('/')}>
+            <Button
+              variant="secondary"
+              className="no-print"  // Añadir la clase "no-print"
+              onClick={() => navigate('/')}
+            >
               &larr; Volver al Inventario
             </Button>
           </div>
@@ -90,7 +110,7 @@ function InventorySummary() {
               <th>Stock</th>
               <th>Última Modificación</th>
               <th>Cambio Generado</th>
-              <th>Historial</th>
+              <th className="no-print">Historial</th>
             </tr>
           </thead>
           <tbody>
@@ -115,7 +135,7 @@ function InventorySummary() {
                   <td>{product.stock}</td>
                   <td>{lastModifiedDate}</td>
                   <td>{cambioGenerado}</td>
-                  <td>
+                  <td className="no-print">
                     <Button
                       variant="info"
                       size="sm"
